@@ -1,10 +1,34 @@
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
+  height:100%;
+  overflow: hidden;
+}
+
+html {
+  height:100%;
 }
 
 ol, ul {
   padding-left: 30px;
+}
+
+h6 {
+  margin-right: 10px;
+}
+
+div.wrap {height:100%; overflow:hidden;}
+
+.sm-font {
+  font-size: 1vw;
+}
+
+.med-font {
+  font-size: 1.5vw;
+}
+
+.lrg-font {
+  font-size: 2vw;
 }
 
 .board-row:after {
@@ -18,7 +42,7 @@ ol, ul {
 }
 
 .square {
-  /* background: #fff; */
+  background: #fff;
   border: 1px solid #999;
   float: left;
   font-size: 24px;
@@ -47,4 +71,122 @@ ol, ul {
 
 .game-info {
   margin-left: 20px;
+}
+
+.shop-tile {
+  position: relative;
+  background: #18222B;
+  border: none;
+  float: left;
+  width: 16.66%;
+  height: 20vh;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  padding: 0;
+  border-radius: 5px;
+}
+
+.champ-tile:hover {
+  background: #18222B;
+}
+
+.champ-tile:after {
+  content: "";
+  background: #FFFFFF;
+  display: block;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: all 0.8s
+}
+
+.champ-tile:active:after {
+  padding: 0;
+  margin: 0;
+  opacity: 0.5;
+  transition: 0s
+}
+
+.champ-pic {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.champ-name {
+  position: absolute;
+  left: 10px;
+  bottom: 0px;
+}
+
+.champ-cost {
+  position: absolute;
+  right: 10px;
+  bottom: 0px;
+}
+
+.buy-xp-btn {
+  height: 10vh;
+  background-color: #2F82A0;
+  border: none;
+  line-height: 0.6;
+  text-align: left;
+  text-indent:
+}
+
+.buy-xp-btn:hover, .buy-xp-btn:focus, .buy-xp-btn:active, .buy-xp-btn.active, .open>.dropdown-toggle.buy-xp-btn {
+    background-color: #114E69;
+    outline: none;
+}
+
+.refresh-btn {
+  height: 10vh;
+  background-color: #8D7E57;
+  border: none;
+  line-height: 0.6;
+  text-align: left;
+  text-indent:
+}
+
+.refresh-btn:hover, .refresh-btn:focus, .refresh-btn:active, .refresh-btn.active, .open>.dropdown-toggle.refresh-btn {
+    background-color: #3D3926;
+    outline: none;
+}
+
+.level {
+  color: #FFFFFF;
+  margin-left: 20px;
+}
+
+.exp {
+  color: #FFFFFF;
+  margin-left: 1%;
+}
+
+.reroll-odds {
+  color: #FFFFFF;
+  position: fixed;
+  left: 15%;
+  bottom: 20vh;
+}
+
+.gold {
+  color: #FFFFFF;
+  position: fixed;
+  transform: translate(-50%, 0);
+  left: 50%;
+}
+
+.shop {
+  background-color: #18222B;
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 80%;
+  border-radius: 5px;
 }

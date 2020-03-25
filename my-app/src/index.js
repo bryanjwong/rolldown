@@ -1,162 +1,95 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import gangplank from "./images/gangplank.jpeg"
 
-function Square(props) {
+function ChampionTile(props) {
   return (
     <button
-      className="square"
+      className="btn btn-primary shop-tile champ-tile"
       onClick={props.onClick}
-      style={{backgroundColor: props.backgroundColor}}
     >
-      {props.value}
+      <img className="champ-pic" src={gangplank} width="100%"/>
+      <div className="d-inline sm-font champ-name">{props.championName}</div>
+      <div className="d-inline sm-font champ-cost">💰{props.championCost}</div>
     </button>
   );
 }
 
-class Board extends React.Component {
-  renderSquare(i) {
-    let squareHighlighted;
-    if(this.props.winningSpaces) {
-      squareHighlighted = (this.props.winningSpaces.indexOf(i) !== -1);
-      if(squareHighlighted) {
-        console.log(i);
-      }
-    }
-
-    return (
-      <Square
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)}
-        backgroundColor={squareHighlighted ? '#93A' : '#fff'}
-      />
-    );
-  }
-
-  render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
-  }
+function BuyXPButton(props) {
+  return (
+    <button
+      className="btn btn-primary btn-block buy-xp-btn"
+      onClick={props.onClick}
+    >
+      <p class="med-font">Buy XP</p>
+      <p class="sm-font">💰4</p>
+    </button>
+  );
 }
 
-class Game extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      history: [{
-        squares: Array(9).fill(null,)
-      }],
-      stepNumber: 0,
-      xIsNext: true,
-    };
-  }
-
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1]
-    const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-      history: history.concat([{
-        squares: squares,
-      }]),
-      stepNumber: history.length,
-      xIsNext: !this.state.xIsNext,
-    });
-  }
-
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
-    })
-  }
-
-  render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const winningSpaces = calculateWinner(current.squares)
-    const winner = winningSpaces ? current.squares[winningSpaces[0]] : null;
-
-    const moves = history.map((step, move) => {
-      const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
-      return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
-
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
-
-    return (
-      <div className="game">
-        <div className="game-board">
-          <Board
-            squares={current.squares}
-            winningSpaces={winningSpaces}
-            onClick={(i) => this.handleClick(i)}
-          />
-        </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <ol>{moves}</ol>
-        </div>
-      </div>
-    );
-  }
+function RefreshButton(props) {
+  return (
+    <button
+      className="btn btn-primary btn-block refresh-btn"
+      onClick={props.onClick}
+    >
+      <p class="med-font">Refresh</p>
+      <p class="sm-font">💰2</p>
+    </button>
+  );
 }
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return [a, b, c];
-    }
+function LeftUI(props) {
+  return (
+    <div className="shop-tile">
+      <div><BuyXPButton /></div>
+      <div><RefreshButton /></div>
+    </div>
+  );
+}
+
+function RerollOdds(props) {
+  return (
+    <div className="d-inline reroll-odds">
+      <h6 className="d-inline sm-font">◍ 5%</h6>
+      <h6 className="d-inline sm-font">◍ 5%</h6>
+      <h6 className="d-inline sm-font">◍ 5%</h6>
+      <h6 className="d-inline sm-font">◍ 5%</h6>
+      <h6 className="d-inline sm-font">◍ 5%</h6>
+    </div>
+  )
+}
+
+class Shop extends React.Component {
+  render() {
+    return (
+      <div className="shop">
+
+        <h2 className="level d-inline lrg-font">Lvl5</h2>
+        <h5 className="exp d-inline med-font"> 2/10</h5>
+        <div className="d-inline"><RerollOdds /></div>
+        <h2 className="gold d-inline lrg-font">💰18</h2>
+
+
+        <div>
+          <LeftUI/>
+          <ChampionTile championName="Gangplank" championCost="5"/>
+          <ChampionTile championName="Lucian" championCost="5"/>
+          <ChampionTile championName="Kayle" championCost="5"/>
+          <ChampionTile championName="Cho'gath" championCost="5"/>
+          <ChampionTile championName="Kha'zix" championCost="5"/>
+        </div>
+
+      </div>
+    )
   }
-  return null;
+
 }
 
 // ========================================
 
 ReactDOM.render(
-  <Game />,
+  <Shop />,
   document.getElementById('root')
 );
