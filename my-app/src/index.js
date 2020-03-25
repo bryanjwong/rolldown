@@ -64,7 +64,7 @@ function BuyXPButton(props) {
   }
 
   return (
-    <div
+    <button
       className="buy-xp-btn clickable"
       onClick={props.onClick}
       onMouseOver={handleMouseOver}
@@ -75,7 +75,7 @@ function BuyXPButton(props) {
         <div className="med-font">Buy XP</div>
         <img className="d-inline gold-icon-sm" src={Gold}/><div className="d-inline sm-font">4</div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -95,8 +95,9 @@ function RefreshButton(props) {
   }
 
   return (
-    <div
+    <button
       className="refresh-btn clickable"
+      // onClick={props.refreshClicked()}
       onClick={props.onClick}
       onMouseOver={handleMouseOver}
       onMouseLeave={handleMouseLeave}
@@ -106,16 +107,7 @@ function RefreshButton(props) {
         <div className="med-font">Refresh</div>
         <img className="d-inline gold-icon-sm" src={Gold}/><div className="d-inline sm-font">2</div>
       </div>
-    </div>
-  );
-}
-
-function LeftUI(props) {
-  return (
-    <div className="shop-tile">
-      <div><BuyXPButton /></div>
-      <div><RefreshButton /></div>
-    </div>
+    </button>
   );
 }
 
@@ -133,22 +125,61 @@ function RerollOdds(props) {
 }
 
 class Shop extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      level: 2,
+      xp: 0,
+      gold: 999
+    };
+  }
+
+  buyXPClicked() {
+    if(this.state['level'] == 9 || this.state['gold'] < 4) {
+      return;
+    }
+    var gold = this.state['gold'] - 4;
+    var xp = this.state['xp'] + 4;
+    var level = this.state['level'];
+    if(xp >= Constants.XP_THRESH[level]) {
+      xp -= Constants.XP_THRESH[level];
+      level++;
+    }
+    this.setState ({
+      level: level,
+      xp: xp,
+      gold: gold
+    });
+  }
+
+  refreshClicked() {
+    if(this.state['gold'] < 2) {
+      return;
+    }
+    var gold = this.state['gold'] - 2;
+    this.setState ({
+      gold: gold
+    });
+  }
+
   render() {
-    const state = this.props.state;
-    const level = state['level'];
-    const xp_text = (level == 9) ? "Max" : state['xp'] + "/" + Constants.XP_THRESH[level];
+    const level = this.state['level'];
+    const xp_text = (level == 9) ? "Max" : this.state['xp'] + "/" + Constants.XP_THRESH[level];
     return (
       <div className="shop">
 
         <div className="display-bar">
-          <h2 className="level d-inline lrg-font">Lvl.{state['level']}</h2>
+          <h2 className="level d-inline lrg-font">Lvl.{this.state['level']}</h2>
           <h5 className="exp d-inline med-font">{xp_text}</h5>
-          <RerollOdds level={state['level']}/>
-          <div className="gold d-inline lrg-font"><img className="d-inline gold-icon-lrg" src={Gold}/>{state['gold']}</div>
+          <RerollOdds level={this.state['level']}/>
+          <div className="gold d-inline lrg-font"><img className="d-inline gold-icon-lrg" src={Gold}/>{this.state['gold']}</div>
         </div>
 
         <div>
-          <LeftUI/>
+          <div className="shop-tile">
+            <div><BuyXPButton onClick={() => this.buyXPClicked()}/></div>
+            <div><RefreshButton onClick={() => this.refreshClicked()}/></div>
+          </div>
           <ChampionTile championName="Gangplank" championCost="5"/>
           <ChampionTile championName="Lucian" championCost="5"/>
           <ChampionTile championName="Kayle" championCost="5"/>
@@ -171,7 +202,7 @@ class ChampionStage extends React.Component {
   render() {
     const champions = [];
     for(let i = 0; i < 10; i++) {
-      champions.push(<ChampionStageTile/>);
+      champions.push(<ChampionStageTile key={i}/>);
     }
     return (
       <div className="champ-stage">
@@ -182,19 +213,12 @@ class ChampionStage extends React.Component {
 }
 
 class Board extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      level: 2,
-      xp: 0,
-      gold: 50
-    };
-  }
+
   render() {
     return (
       <div>
         <ChampionStage />
-        <Shop state={this.state}/>
+        <Shop />
       </div>
     );
   }
