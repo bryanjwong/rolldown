@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import gangplank from "./images/gangplank.jpeg"
+import * as Constants from './constants/constants.js';
+import gangplank from "./images/gangplank.jpeg";
+import malphite from "./images/renders/malphite.png";
 
 function ChampionTile(props) {
   return (
@@ -50,26 +52,30 @@ function LeftUI(props) {
 }
 
 function RerollOdds(props) {
+  const level = props.level;
   return (
     <div className="d-inline reroll-odds">
-      <h6 className="d-inline sm-font">◍ 5%</h6>
-      <h6 className="d-inline sm-font">◍ 5%</h6>
-      <h6 className="d-inline sm-font">◍ 5%</h6>
-      <h6 className="d-inline sm-font">◍ 5%</h6>
-      <h6 className="d-inline sm-font">◍ 5%</h6>
+      <h6 className="d-inline sm-font">◍ {Constants.REROLL_ODDS[level][0]}%</h6>
+      <h6 className="d-inline sm-font">◍ {Constants.REROLL_ODDS[level][1]}%</h6>
+      <h6 className="d-inline sm-font">◍ {Constants.REROLL_ODDS[level][2]}%</h6>
+      <h6 className="d-inline sm-font">◍ {Constants.REROLL_ODDS[level][3]}%</h6>
+      <h6 className="d-inline sm-font">◍ {Constants.REROLL_ODDS[level][4]}%</h6>
     </div>
   )
 }
 
 class Shop extends React.Component {
   render() {
+    const state = this.props.state;
+    const level = state['level'];
+    const xp_text = (level == 9) ? "Max" : state['xp'] + "/" + Constants.XP_THRESH[level];
     return (
       <div className="shop">
 
-        <h2 className="level d-inline lrg-font">Lvl5</h2>
-        <h5 className="exp d-inline med-font"> 2/10</h5>
-        <div className="d-inline"><RerollOdds /></div>
-        <h2 className="gold d-inline lrg-font">💰18</h2>
+        <h2 className="level d-inline lrg-font">Lvl{state['level']}</h2>
+        <h5 className="exp d-inline med-font">{xp_text}</h5>
+        <RerollOdds className="d-inline" level={state['level']}/>
+        <h2 className="gold d-inline lrg-font">💰{state['gold']}</h2>
 
 
         <div>
@@ -84,12 +90,50 @@ class Shop extends React.Component {
       </div>
     )
   }
+}
 
+function ChampionStageTile(props) {
+  return(
+    <img className="champ-stage-tile" src={malphite} />
+  );
+}
+
+class ChampionStage extends React.Component {
+  render() {
+    const champions = [];
+    for(let i = 0; i < 10; i++) {
+      champions.push(<ChampionStageTile/>);
+    }
+    return (
+      <div className="champ-stage">
+        {champions}
+      </div>
+    );
+  }
+}
+
+class Board extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      level: 9,
+      xp: 0,
+      gold: 50
+    };
+  }
+  render() {
+    return (
+      <div>
+        <ChampionStage />
+        <Shop state={this.state}/>
+      </div>
+    );
+  }
 }
 
 // ========================================
 
 ReactDOM.render(
-  <Shop />,
+  <Board />,
   document.getElementById('root')
 );

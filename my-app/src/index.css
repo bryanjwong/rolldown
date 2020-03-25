@@ -184,9 +184,23 @@ div.wrap {height:100%; overflow:hidden;}
 .shop {
   background-color: #18222B;
   position: fixed;
-  bottom: 10px;
+  bottom: 1%;
   left: 50%;
   transform: translate(-50%, 0);
   width: 80%;
   border-radius: 5px;
+}
+
+.champ-stage-tile {
+  position: relative;
+  border: none;
+  width: 10%;
+}
+
+.champ-stage {
+  position: fixed;
+  bottom: 30%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 75%;
 }
