@@ -11,6 +11,10 @@ function importAll(r) {
 }
 const images = importAll(require.context('./images', true, /\.(png|jpe?g|svg)$/));
 
+const REFRESH_KEY = 68;
+const BUY_XP_KEY = 65;
+const SELL_UNIT_KEY = 69;
+
 class ChampionTile extends React.Component {
   constructor(props) {
     super(props);
@@ -178,9 +182,49 @@ class Shop extends React.Component {
       gold: 50,
       store: myStore,
       stage: myStage,
-      stageLength: 0
+      stageLength: 0,
+      hovered: null
     };
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
 
+  handleKeyPress(e) {
+    switch (e.keyCode) {
+      case BUY_XP_KEY:
+        this.buyXPClicked()
+        break;
+      case REFRESH_KEY:
+        this.refreshClicked();
+        break;
+      case SELL_UNIT_KEY:
+        if(this.state['hovered'] != null) {
+          this.sellChamp(this.state['hovered']);
+        }
+        break;
+      default:
+    }
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyPress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyPress);
+  }
+
+  handleMouseOver(i) {
+    this.setState({
+      hovered: i
+    });
+  }
+
+  handleMouseLeave(i) {
+    if(this.state['hovered'] === i) {
+      this.setState({
+        hovered: null
+      });
+    }
   }
 
   buyXPClicked() {
@@ -287,6 +331,29 @@ class Shop extends React.Component {
     this.checkForThree(champName);
   }
 
+  sellChamp(i) {
+    let myStage = this.state['stage'];
+    let champName = myStage[i]['name'];
+    let champCost = myStage[i]['cost'];
+    let champLevel = myStage[i]['level'];
+    let myGold = this.state['gold'];
+
+    if(champName === "") {
+      return
+    }
+    myGold += Constants.SELL_RATE[champCost][champLevel - 1];
+    myStage[i] = {
+      name: "",
+      cost: 0,
+      level: 0
+    };
+    this.setState({
+      gold: myGold,
+      stage: myStage,
+      stageLength: this.state.stageLength - 1
+    });
+  }
+
   checkForThree(champName) {
     let champOccurences = {
       1: [],
@@ -386,8 +453,12 @@ class Shop extends React.Component {
     const level = this.state['level'];
     const xp_text = (level === 9) ? "Max" : this.state['xp'] + "/" + Constants.XP_THRESH[level];
     return (
-      <div>
-        <ChampionStage stage={this.state['stage']}/>
+      <div onKeyDown={this.handleKeyPress}>
+        <img className="background" src={images['tft-map-background.jpg']}/>
+        <ChampionStage
+          stage={this.state['stage']}
+          onMouseOver={(i) => this.handleMouseOver(i)}
+          onMouseLeave={(i) => this.handleMouseLeave(i)}/>
         <div className="shop">
           <RerollOdds level={this.state['level']}/>
           <div className="display-bar">
@@ -419,7 +490,10 @@ class ChampionStage extends React.Component {
     const stage = this.props.stage;
     const championIcons = [];
     for(let i = 0; i < 10; i++) {
-      championIcons.push(<ChampionStageTile key={i} champion={stage[i]}/>);
+      championIcons.push(<ChampionStageTile
+        key={i} champion={stage[i]}
+        onMouseOver={() => this.props.onMouseOver(i)}
+        onMouseLeave={() => this.props.onMouseLeave(i)}/>);
     }
     return (
       <div className="champ-stage row">
@@ -438,8 +512,10 @@ function ChampionStageTile(props) {
   let starPath = "star" + champion['level'].toString() + ".png";
   return(
     <div className="champ-stage-tile">
-      <img className="stage-icon" src={images[iconPath]} />
-      <img className="stage-star" src={images[starPath]}/>
+      <img className="stage-icon" src={images[iconPath]}
+        onMouseOver={props.onMouseOver} onMouseLeave={props.onMouseLeave}/>
+      <img className="stage-star" src={images[starPath]}
+        onMouseOver={props.onMouseOver} onMouseLeave={props.onMouseLeave}/>
     </div>
 
   );
