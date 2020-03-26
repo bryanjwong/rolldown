@@ -10,9 +10,6 @@ function importAll(r) {
     return images;
 }
 const images = importAll(require.context('./images', true, /\.(png|jpe?g|svg)$/));
-console.log(images);
-console.log(ChampionData);
-console.log(Constants.championPool);
 
 class ChampionTile extends React.Component {
   constructor(props) {
@@ -45,7 +42,7 @@ class ChampionTile extends React.Component {
     for(let trait of championTraits) {
       let traitImagePath = "traits/" + trait.toLowerCase().replace(" ", "").replace("-", "") + ".png";
       traitTexts.push(
-        <div className="sm-font">
+        <div key={trait} className="sm-font">
           <img className="trait-icon" src={images[traitImagePath]}/>
           {trait}
         </div>
@@ -167,11 +164,21 @@ class Shop extends React.Component {
         traits: champRolled['traits']
       });
     }
+    let myStage = {}
+    for(let i = 0; i < 10; i++) {
+      myStage[i] = {
+        name: "",
+        cost: 0,
+        level: 0
+      };
+    }
     this.state = {
       level: 2,
       xp: 0,
       gold: 50,
-      store: myStore
+      store: myStore,
+      stage: myStage,
+      stageLength: 0
     };
 
   }
@@ -240,10 +247,19 @@ class Shop extends React.Component {
   }
 
   buyChamp(i) {
-    let myStore = this.state.store.slice();
+    let myStore = this.state['store'].slice();
     let myGold = this.state.gold;
+    let myStage = this.state.stage;
+    let myStageLength = this.state.stageLength;
+    const champName = myStore[i]['name'];
     const champCost = myStore[i]['cost'];
-    if(myGold < champCost) {
+
+    // If we can buy enough copies to make an upgrade, do so
+    if(myStageLength === 10) {
+      this.checkForOverflowCombine(i);
+      return;
+    }
+    if(myGold < champCost || champCost === 0) {
       return;
     }
     myGold -= champCost;
@@ -252,83 +268,186 @@ class Shop extends React.Component {
       cost: 0,
       traits: []
     };
+    for(let j = 0; j < 10; j++) {
+      if(myStage[j]['name'] === "") {
+        myStage[j] = {
+          name: champName,
+          cost: champCost,
+          level: 1
+        }
+        break;
+      }
+    }
     this.setState ({
       store: myStore,
-      gold: myGold
+      gold: myGold,
+      stage: myStage,
+      stageLength: myStageLength + 1
     });
+    this.checkForThree(champName);
   }
+
+  checkForThree(champName) {
+    let champOccurences = {
+      1: [],
+      2: [],
+      3: [],
+    }
+    let myStage = this.state['stage'];
+    for(let i = 0; i < 10; i++) {
+      let champion = myStage[i];
+      if(champion['name'] === champName) {
+        let champLevel = champion['level'];
+        champOccurences[champLevel].push(i);  // log store index where found
+        if(champOccurences[champLevel].length === 3) {
+          myStage[champOccurences[champLevel][0]]['level']++;
+          myStage[champOccurences[champLevel][1]] = {
+            name: "",
+            cost: 0,
+            level: 0
+          };
+          myStage[champOccurences[champLevel][2]] = {
+            name: "",
+            cost: 0,
+            level: 0
+          };
+          this.setState({
+            stage: myStage,
+            stageLength: this.state['stageLength'] - 2
+          });
+          console.log(myStage);
+          this.checkForThree(champName);
+        }
+      }
+    }
+  }
+
+  checkForOverflowCombine(i) {
+    let myStore = this.state['store'].slice();
+    let myGold = this.state.gold;
+    let myStage = this.state.stage;
+    let myStageLength = this.state.stageLength;
+    const champName = myStore[i]['name'];
+    const champCost = myStore[i]['cost'];
+
+    let storeCount = 0, stageCount = 0;
+    for(let storeChamp of myStore) {
+      if(storeChamp['name'] === champName) {
+        storeCount++;
+      }
+    }
+    for(let j = 0; j < 10; j++) {
+      if(myStage[j]['name'] === champName && myStage[j]['level'] === 1) {
+        stageCount++;
+      }
+    }
+    if((storeCount + stageCount) >= 3) {
+      myStore[i] = {
+        name: "",
+        cost: 0,
+        traits: []
+      };
+      for(let j = 0, k = 1; k < (3 - stageCount) && k < 3; j++) {
+        if(myStore[j]['name'] === champName) {
+          myStore[j] = {
+            name: "",
+            cost: 0,
+            traits: []
+          };
+          k++;
+        }
+      }
+
+      var upgraded = false;
+      for(let j = 0; j < 10; j++) {
+        if(myStage[j]['name'] === champName && myStage[j]['level'] === 1) {
+          if(!upgraded) {
+            myStage[j]['level']++;
+            upgraded = true;
+          }
+          else {
+            myStage[j]['name'] = "";
+            myStageLength -= 1;
+          }
+        }
+      }
+      myGold -= champCost * storeCount;
+      console.log(myStage);
+      this.setState ({
+        store: myStore,
+        gold: myGold,
+        stage: myStage,
+        stageLength: myStageLength
+      });
+  }
+}
 
   render() {
     const level = this.state['level'];
     const xp_text = (level === 9) ? "Max" : this.state['xp'] + "/" + Constants.XP_THRESH[level];
     return (
-      <div className="shop">
-
-        <RerollOdds level={this.state['level']}/>
-
-        <div className="display-bar">
-          <img className="left-ui-corner" src={images['left-ui-corner.png']}/>
-          <h2 className="level d-inline lrg-font">Lvl.{this.state['level']}</h2>
-          <h5 className="exp d-inline med-font">{xp_text}</h5>
-
-          <img className="gold-background" src={images['gold-background.png']}/>
-          <div className="gold d-inline"><img className="d-inline gold-icon-lrg" src={images['gold.png']}/>{this.state['gold']}</div>
-        </div>
-
-
-
-        <div>
-          <div className="shop-tile">
-            <div><BuyXPButton onClick={() => this.buyXPClicked()}/></div>
-            <div><RefreshButton onClick={() => this.refreshClicked()}/></div>
+      <div>
+        <ChampionStage stage={this.state['stage']}/>
+        <div className="shop">
+          <RerollOdds level={this.state['level']}/>
+          <div className="display-bar">
+            <img className="left-ui-corner" src={images['left-ui-corner.png']}/>
+            <h2 className="level d-inline lrg-font">Lvl.{this.state['level']}</h2>
+            <h5 className="exp d-inline med-font">{xp_text}</h5>
+            <img className="gold-background" src={images['gold-background.png']}/>
+            <div className="gold d-inline"><img className="d-inline gold-icon-lrg" src={images['gold.png']}/>{this.state['gold']}</div>
           </div>
-          <ChampionTile champion={this.state['store'][0]} onClick={() => this.buyChamp(0)}/>
-          <ChampionTile champion={this.state['store'][1]} onClick={() => this.buyChamp(1)}/>
-          <ChampionTile champion={this.state['store'][2]} onClick={() => this.buyChamp(2)}/>
-          <ChampionTile champion={this.state['store'][3]} onClick={() => this.buyChamp(3)}/>
-          <ChampionTile champion={this.state['store'][4]} onClick={() => this.buyChamp(4)}/>
+          <div>
+            <div className="shop-tile">
+              <div><BuyXPButton onClick={() => this.buyXPClicked()}/></div>
+              <div><RefreshButton onClick={() => this.refreshClicked()}/></div>
+            </div>
+            <ChampionTile champion={this.state['store'][0]} onClick={() => this.checkForThree(this.buyChamp(0))}/>
+            <ChampionTile champion={this.state['store'][1]} onClick={() => this.checkForThree(this.buyChamp(1))}/>
+            <ChampionTile champion={this.state['store'][2]} onClick={() => this.checkForThree(this.buyChamp(2))}/>
+            <ChampionTile champion={this.state['store'][3]} onClick={() => this.checkForThree(this.buyChamp(3))}/>
+            <ChampionTile champion={this.state['store'][4]} onClick={() => this.checkForThree(this.buyChamp(4))}/>
+          </div>
         </div>
-
       </div>
     )
   }
 }
 
-function ChampionStageTile(props) {
-  return(
-    <img className="champ-stage-tile" src={images['renders/malphite.png']} />
-  );
-}
-
 class ChampionStage extends React.Component {
   render() {
-    const champions = [];
+    const stage = this.props.stage;
+    const championIcons = [];
     for(let i = 0; i < 10; i++) {
-      champions.push(<ChampionStageTile key={i}/>);
+      championIcons.push(<ChampionStageTile key={i} champion={stage[i]}/>);
     }
     return (
-      <div className="champ-stage">
-        {champions}
+      <div className="champ-stage row">
+        {championIcons}
       </div>
     );
   }
 }
 
-class Board extends React.Component {
-
-  render() {
-    return (
-      <div>
-        <ChampionStage />
-        <Shop />
-      </div>
-    );
+function ChampionStageTile(props) {
+  const champion = props.champion;
+  if(champion['name'] === "") {
+    return <div className="champ-stage-tile"></div>;
   }
+  let iconPath = "icons/" + champion['name'].replace(" ", "").replace("'", "") + ".png";
+  let starPath = "star" + champion['level'].toString() + ".png";
+  return(
+    <div className="champ-stage-tile">
+      <img className="stage-icon" src={images[iconPath]} />
+      <img className="stage-star" src={images[starPath]}/>
+    </div>
+
+  );
 }
 
 // ========================================
 
 ReactDOM.render(
-  <Board />,
+  <Shop />,
   document.getElementById('root')
 );
