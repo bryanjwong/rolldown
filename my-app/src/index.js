@@ -34,17 +34,34 @@ class ChampionTile extends React.Component {
     }
   }
   render() {
+    let championName = this.props.champion['name'];
+    let championCost = this.props.champion['cost'];
+    let championImagePath = "splash/" + championName.replace(" ", "").replace("'", "") + ".png";
+    let championTraits = this.props.champion['traits'];
+    let traitTexts = [];
+    for(let trait of championTraits) {
+      let traitImagePath = "traits/" + trait.toLowerCase().replace(" ", "").replace("-", "") + ".png";
+      traitTexts.push(
+        <div className="sm-font">
+          <img className="trait-icon" src={images[traitImagePath]}/>
+          {trait}
+        </div>
+      );
+    }
     return (
       <div
         className="shop-tile clickable"
         onMouseOver={this.handleMouseOver}
         onMouseLeave={this.handleMouseLeave}
       >
-        <img className="champ-pic" src={images['splash/gangplank.jpeg']} />
-        <img className="champ-tile-window" src={images['champion-tile-1.png']}/>
+        <img className="champ-pic" src={images[championImagePath]} />
+        <img className="champ-tile-window" src={images["champion-tile-1.png"]}/>
+        <div className="champ-trait-text">
+          {traitTexts}
+        </div>
         <div className="champ-tile-text">
-          <div className="d-inline sm-font champ-name">{this.props.championName}</div>
-          <div className="d-inline sm-font champ-cost"><img className="d-inline gold-icon-sm" src={images['gold.png']}/>{this.props.championCost}</div>
+          <div className="d-inline sm-font champ-name">{championName}</div>
+          <div className="d-inline sm-font champ-cost"><img className="d-inline gold-icon-sm" src={images['gold.png']}/>{championCost}</div>
         </div>
       </div>
     );
@@ -132,10 +149,12 @@ class Shop extends React.Component {
     super(props);
     let myStore = [];
     for(let i = 0; i < 5; i++) {
+      let champRolled = this.reroll(2);
       myStore.push({
-        champion: "",
-        cost: ""
-      })
+        name: champRolled['name'],
+        cost: champRolled['cost'],
+        traits: champRolled['traits']
+      });
     }
     this.state = {
       level: 2,
@@ -143,6 +162,7 @@ class Shop extends React.Component {
       gold: 999,
       store: myStore
     };
+
   }
 
   buyXPClicked() {
@@ -168,23 +188,29 @@ class Shop extends React.Component {
       return;
     }
     let gold = this.state['gold'] - 2;
+    this.setState ({
+      gold: gold
+    });
+    this.rerollAll();
+  }
+
+  rerollAll() {
     let myStore = [];
     for(let i = 0; i < 5; i++) {
-      let champRolled = this.reroll();
+      let champRolled = this.reroll(this.state.level);
       myStore.push({
-        champion: champRolled['name'],
-        cost: champRolled['cost']
+        name: champRolled['name'],
+        cost: champRolled['cost'],
+        traits: champRolled['traits']
       });
     }
     this.setState ({
-      gold: gold,
       store: myStore
     });
   }
 
-  reroll() {
+  reroll(level) {
     let randCost = Math.floor(Math.random() * 100);
-    let level = this.state.level;
     let costRolled;
 
     if(randCost === 0) {
@@ -220,11 +246,11 @@ class Shop extends React.Component {
             <div><BuyXPButton onClick={() => this.buyXPClicked()}/></div>
             <div><RefreshButton onClick={() => this.refreshClicked()}/></div>
           </div>
-          <ChampionTile championName="Gangplank" championCost="5" />
-          <ChampionTile championName="Lucian" championCost="5" />
-          <ChampionTile championName="Kayle" championCost="5" />
-          <ChampionTile championName="Cho'gath" championCost="5" />
-          <ChampionTile championName="Kha'zix" championCost="5" />
+          <ChampionTile champion={this.state['store'][0]} />
+          <ChampionTile champion={this.state['store'][1]} />
+          <ChampionTile champion={this.state['store'][2]}/>
+          <ChampionTile champion={this.state['store'][3]} />
+          <ChampionTile champion={this.state['store'][4]} />
         </div>
 
       </div>
