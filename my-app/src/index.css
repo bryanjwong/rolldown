@@ -89,16 +89,21 @@ div.wrap {height:100%; overflow:hidden;}
   height: 100%;
 }
 
+.champ-tile-text {
+  color: #FFFFFF;
+  position: absolute;
+  width: 100%;
+  bottom: 22%;
+}
+
 .champ-name {
   position: absolute;
   left: 6%;
-  bottom: 4%;
 }
 
 .champ-cost {
   position: absolute;
   right: 6%;
-  bottom: 4%;
 }
 
 .left-btn-ui {
