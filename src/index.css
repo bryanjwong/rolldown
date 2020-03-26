@@ -73,6 +73,10 @@ div.wrap {height:100%; overflow:hidden;}
   border-radius: 5px;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .clickable:after {
   content: "";
   background: #FFFFFF;
@@ -90,7 +94,7 @@ div.wrap {height:100%; overflow:hidden;}
   padding: 0;
   margin: 0;
   opacity: 0.5;
-  transition: 0s
+  transition: 0s;
 }
 
 .champ-pic {
@@ -259,8 +263,8 @@ div.wrap {height:100%; overflow:hidden;}
   width: 10%;
 }
 
-.champ-stage-tile img {
- margin: 25px;
+.glow-when-hovered img {
+
  opacity: 0.8;
 
  /*Transition*/
@@ -272,7 +276,7 @@ div.wrap {height:100%; overflow:hidden;}
  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0,0,0,0.1)));
 }
 
-.champ-stage-tile img:hover {
+.glow-when-hovered img:hover {
    opacity: 1;
 
    /*Reflection*/
@@ -288,12 +292,18 @@ div.wrap {height:100%; overflow:hidden;}
   position: absolute;
   width: 80%;
   height: 12vh;
+  bottom: -12vh;
+  border-radius: 50px;
 }
 
 .stage-star {
   position: absolute;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 3.5vh;
   width: 80%;
-  bottom: -20vh;
+  bottom: -13vh;
 }
 
 .champ-stage {

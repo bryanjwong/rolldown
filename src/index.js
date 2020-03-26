@@ -1,7 +1,17 @@
 import React from "react"
 import ReactDOM from "react-dom"
+import $ from "jquery"
 import "./index.css"
 import * as Constants from "./constants.js"
+
+/* Todos:
+    Set keybinds
+    Set Gold/Exp
+    Grab champs to sell them
+    Swap champion places
+    View specific odds of rolling a champ
+    ADD SOUNDS
+*/
 
 function importAll(r) {
     let images = {};
@@ -155,7 +165,7 @@ function RerollOdds(props) {
   )
 }
 
-class Shop extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
     let myStore = [];
@@ -167,7 +177,7 @@ class Shop extends React.Component {
         traits: champRolled['traits']
       });
     }
-    let myStage = {}
+    let myStage = {};
     for(let i = 0; i < 10; i++) {
       myStage[i] = {
         name: "",
@@ -182,7 +192,9 @@ class Shop extends React.Component {
       store: myStore,
       stage: myStage,
       stageLength: 0,
-      hovered: null
+      hovered: [],
+      dragging: false,
+      heldChamp: null
     };
     this.handleKeyPress = this.handleKeyPress.bind(this);
   }
@@ -196,8 +208,8 @@ class Shop extends React.Component {
         this.refreshClicked();
         break;
       case SELL_UNIT_KEY:
-        if(this.state['hovered'] != null) {
-          this.sellChamp(this.state['hovered']);
+        if(this.state.hovered.length > 0) {
+          this.sellChamp(this.state.hovered[0]);
         }
         break;
       default:
@@ -213,17 +225,24 @@ class Shop extends React.Component {
   }
 
   handleMouseOver(i) {
+    let myHovered = this.state.hovered;
+    if(myHovered.includes(i)) return;
+
+    myHovered.push(i);
     this.setState({
-      hovered: i
+      hovered: myHovered
     });
   }
 
   handleMouseLeave(i) {
-    if(this.state['hovered'] === i) {
-      this.setState({
-        hovered: null
-      });
-    }
+    let myHovered = this.state.hovered;
+    var index = myHovered.indexOf(i);
+    if(index === -1) return;
+
+    myHovered.splice(index, 1);
+    this.setState({
+        hovered: myHovered
+    });
   }
 
   buyXPClicked() {
@@ -304,13 +323,14 @@ class Shop extends React.Component {
 
     // If we can buy enough copies to make an upgrade, do so
     if(myStageLength === 10) {
-      this.checkForOverflowCombine(i);
+      this.checkForOverflowCombine(i, myStageLength);
       return;
     }
     if(myGold < champCost || champCost === 0) {
       return;
     }
     myGold -= champCost;
+    myStageLength++;
     myStore[i] = {
       name: "",
       cost: 0,
@@ -330,9 +350,10 @@ class Shop extends React.Component {
       store: myStore,
       gold: myGold,
       stage: myStage,
-      stageLength: myStageLength + 1
+      stageLength: myStageLength
     });
-    this.checkForThree(champName);
+    this.checkForThree(champName, myStageLength);
+    console.log(myStageLength);
   }
 
   sellChamp(i) {
@@ -358,7 +379,7 @@ class Shop extends React.Component {
     });
   }
 
-  checkForThree(champName) {
+  checkForThree(champName, myStageLength) {
     let champOccurences = {
       1: [],
       2: [],
@@ -371,6 +392,7 @@ class Shop extends React.Component {
         let champLevel = champion['level'];
         champOccurences[champLevel].push(i);  // log store index where found
         if(champOccurences[champLevel].length === 3) {
+          myStageLength -= 2;
           myStage[champOccurences[champLevel][0]]['level']++;
           myStage[champOccurences[champLevel][1]] = {
             name: "",
@@ -384,19 +406,19 @@ class Shop extends React.Component {
           };
           this.setState({
             stage: myStage,
-            stageLength: this.state['stageLength'] - 2
+            stageLength: myStageLength
           });
-          this.checkForThree(champName);
+          this.checkForThree(champName, myStageLength);
+          console.log(myStageLength);
         }
       }
     }
   }
 
-  checkForOverflowCombine(i) {
+  checkForOverflowCombine(i, myStageLength) {
     let myStore = this.state['store'].slice();
     let myGold = this.state.gold;
     let myStage = this.state.stage;
-    let myStageLength = this.state.stageLength;
     const champName = myStore[i]['name'];
     const champCost = myStore[i]['cost'];
 
@@ -410,6 +432,9 @@ class Shop extends React.Component {
       if(myStage[j]['name'] === champName && myStage[j]['level'] === 1) {
         stageCount++;
       }
+    }
+    if(stageCount === 0) {
+      return
     }
     if((storeCount + stageCount) >= 3) {
       myStore[i] = {
@@ -448,8 +473,49 @@ class Shop extends React.Component {
         stage: myStage,
         stageLength: myStageLength
       });
+      this.checkForThree(champName, myStageLength);
+      console.log(myStageLength);
+    }
   }
-}
+
+  handleSetDown(i) {
+    console.log(i);
+    if(this.state.heldChamp !== null && i !== this.state.heldChamp) return;
+    if(this.state.dragging === false) {
+      this.setState({
+        dragging: true,
+        heldChamp: i
+      });
+      return;
+    }
+    let clickedTile = null;
+    let myHovered = this.state.hovered;
+    console.log(myHovered);
+    for(let element of myHovered) {
+      if(element != i)
+        clickedTile = element;
+    }
+    if(clickedTile === null) {
+      this.setState({
+        dragging: false,
+        heldChamp: null
+      })
+      return;
+    }
+
+    let myStage = this.state.stage;
+    let temp = myStage[i];
+
+    console.log(myStage);
+    console.log(temp);
+    myStage[i] = myStage[clickedTile];
+    myStage[clickedTile] = temp;
+    this.setState({
+      stage: myStage,
+      dragging: false,
+      heldChamp: null
+    });
+  }
 
   render() {
     const level = this.state['level'];
@@ -460,7 +526,9 @@ class Shop extends React.Component {
         <ChampionStage
           stage={this.state['stage']}
           onMouseOver={(i) => this.handleMouseOver(i)}
-          onMouseLeave={(i) => this.handleMouseLeave(i)}/>
+          onMouseLeave={(i) => this.handleMouseLeave(i)}
+          handleSetDown={(i) => this.handleSetDown(i)}
+          dragging={this.state.dragging}/>
         <div className="shop">
           <RerollOdds level={this.state['level']}/>
           <div className="display-bar">
@@ -495,7 +563,9 @@ class ChampionStage extends React.Component {
       championIcons.push(<ChampionStageTile
         key={i} champion={stage[i]}
         onMouseOver={() => this.props.onMouseOver(i)}
-        onMouseLeave={() => this.props.onMouseLeave(i)}/>);
+        onMouseLeave={() => this.props.onMouseLeave(i)}
+        handleSetDown={() => this.props.handleSetDown(i)}
+        dragging={this.props.dragging}/>);
     }
     return (
       <div className="champ-stage row">
@@ -505,27 +575,121 @@ class ChampionStage extends React.Component {
   }
 }
 
-function ChampionStageTile(props) {
-  const champion = props.champion;
-  if(champion['name'] === "") {
-    return <div className="champ-stage-tile"></div>;
+class ChampionStageTile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pos: {
+        x: 0,
+        y: 0
+      },
+      rel: {
+        x: 0,
+        y: 0
+      },
+      active: false,
+    }
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
   }
-  let iconPath = "icons/" + champion['name'].replace(" ", "").replace("'", "") + ".png";
-  let starPath = "star" + champion['level'].toString() + ".png";
-  return(
-    <div className="champ-stage-tile">
-      <img className="stage-icon" src={images[iconPath]}
-        onMouseOver={props.onMouseOver} onMouseLeave={props.onMouseLeave}/>
-      <img className="stage-star" src={images[starPath]}
-        onMouseOver={props.onMouseOver} onMouseLeave={props.onMouseLeave}/>
-    </div>
 
-  );
+  // we could get away with not having this (and just having the listeners on
+  // our div), but then the experience would be possibly be janky. If there's
+  // anything w/ a higher z-index that gets in the way, then you're toast,
+  // etc.
+  componentDidUpdate(props, state) {
+    if (this.props.dragging && this.state.active) {
+      document.addEventListener('mousemove', this.onMouseMove);
+      document.addEventListener('mouseup', this.onMouseUp);
+    } else if (!this.props.dragging && !this.state.active) {
+      document.removeEventListener('mousemove', this.onMouseMove);
+      document.removeEventListener('mouseup', this.onMouseUp);
+    }
+  }
+
+  // calculate relative position to the mouse and set dragging=true
+  onMouseDown(e) {
+    // only left mouse button
+    if (e.button !== 0) return;
+    // don't pick up two at the same time
+    if (this.props.dragging && !this.state.active) {
+      this.props.handleSetDown();
+      return;
+    }
+    console.log(e);
+    var pos = $(ReactDOM.findDOMNode(this)).offset();
+    if(this.props.dragging && this.state.active) {
+      this.setState({
+        rel: {
+          x: 0,
+          y: 0
+        },
+        pos: {
+          x: 0,
+          y: 0
+        },
+        active: false
+      });
+    }
+    else {
+      this.setState({
+        rel: {
+          x: e.pageX,
+          y: e.pageY
+        },
+        active: true
+      });
+    }
+    this.props.handleSetDown();
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  onMouseMove(e) {
+    if (!this.props.dragging || !this.state.active) return;
+    this.setState({
+      pos: {
+        x: e.pageX - this.state.rel.x,
+        y: e.pageY - this.state.rel.y
+      }
+    });
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  render() {
+    const champion = this.props.champion;
+    if(champion['name'] === "") {
+      return <div className="champ-stage-tile"></div>;
+    }
+    let iconPath = "icons/" + champion['name'].replace(" ", "").replace("'", "") + ".png";
+    let starPath = "star" + champion['level'].toString() + ".png";
+    return(
+      <div className="champ-stage-tile">
+        <div
+        onClick={this.onMouseDown}
+        style={{
+          position: 'absolute',
+          left: this.state.pos.x + 'px',
+          top: this.state.pos.y + 'px',
+          width: '100%'
+        }}>
+          <div className="glow-when-hovered">
+            <img className="stage-icon" src={images[iconPath]}
+              onMouseOver={this.props.onMouseOver} onMouseLeave={this.props.onMouseLeave}/>
+          </div>
+          <img className="stage-star" src={images[starPath]}
+            onMouseOver={this.props.onMouseOver} onMouseLeave={this.props.onMouseLeave}/>
+        </div>
+      </div>
+
+    );
+  }
 }
 
 // ========================================
 
 ReactDOM.render(
-  <Shop />,
+  <App />,
   document.getElementById('root')
 );
