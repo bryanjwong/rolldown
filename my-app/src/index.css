@@ -41,6 +41,7 @@ div.wrap {height:100%; overflow:hidden;}
   position: relative;
   height: 1.1vw;
   margin-right: 0.2vw;
+  margin-bottom: 0.8vh;
 }
 
 .trait-icon {
@@ -55,7 +56,7 @@ div.wrap {height:100%; overflow:hidden;}
   border: none;
   float: left;
   width: 16.66%;
-  height: 24vh;
+  height: 23vh;
   border-radius: 5px;
 }
 
@@ -99,7 +100,7 @@ div.wrap {height:100%; overflow:hidden;}
   color: #FFFFFF;
   position: absolute;
   width: 100%;
-  bottom: 32%;
+  bottom: 24%;
   left: 3%;
   line-height: 1.5;
 }
@@ -108,7 +109,7 @@ div.wrap {height:100%; overflow:hidden;}
   color: #FFFFFF;
   position: absolute;
   width: 100%;
-  bottom: 22%;
+  bottom: 19%;
 }
 
 .champ-name {
@@ -161,39 +162,75 @@ div.wrap {height:100%; overflow:hidden;}
   padding-top: 0.5%;
 }
 
+.left-ui-corner {
+  position: absolute;
+  bottom: -40%;
+  left: 0px;
+  height: 150%;
+  width: 20%;
+}
+
 .level {
   color: #FFFFFF;
-  margin-left: 20px;
+  position: relative;
+  bottom: -26%;
+  margin-left: 1%;
 }
 
 .exp {
   color: #FFFFFF;
-  margin-left: 1%;
+  position: relative;
+  margin-left: 7%;
 }
 
 .reroll-odds {
   color: #FFFFFF;
-  position: relative;
-  left: 7%;
+  position: absolute;
+  width: 30%;
+  top: 7%;
+  left: 17%;
+}
+
+.reroll-odds-background {
+  position: absolute;
+  height: 6vh;
+  width: 22vw;
+  z-index: -1;
+}
+
+.reroll-content {
+  position: absolute;
+  margin-top: 0.6vh;
+  margin-left: 2.5vw;
 }
 
 .reroll-gem {
   position: relative;
-  margin-bottom: 0.3%;
-  margin-right: 0.1%;
-  height: 1%;
-  width: 1%;
+  margin-bottom: 1.8%;
+  margin-right: 1%;
+  height: 5%;
+  width: 4%;
+}
+
+.gold-background {
+  position: absolute;
+  bottom: -40%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  height: 120%;
+  width: 10%;
 }
 
 .gold {
   color: #FFFFFF;
+  font-size: 1.3vw;
   position: fixed;
   transform: translate(-50%, 0);
   left: 50%;
+  top: 7.5%;
 }
 
 .shop {
-  background-color: #18222B;
   position: fixed;
   bottom: 2%;
   left: 50%;
