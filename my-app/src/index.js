@@ -179,7 +179,7 @@ class Shop extends React.Component {
     this.state = {
       level: 2,
       xp: 0,
-      gold: 50,
+      gold: 999,
       store: myStore,
       stage: myStage,
       stageLength: 0,
