@@ -260,11 +260,13 @@ class Shop extends React.Component {
     let myStore = [];
     for(let i = 0; i < 5; i++) {
       let champRolled = this.reroll(this.state.level);
-      myStore.push({
-        name: champRolled['name'],
-        cost: champRolled['cost'],
-        traits: champRolled['traits']
-      });
+      if(champRolled) {
+        myStore.push({
+          name: champRolled['name'],
+          cost: champRolled['cost'],
+          traits: champRolled['traits']
+        });
+      }
     }
     this.setState ({
       store: myStore
@@ -382,7 +384,6 @@ class Shop extends React.Component {
             stage: myStage,
             stageLength: this.state['stageLength'] - 2
           });
-          console.log(myStage);
           this.checkForThree(champName);
         }
       }
@@ -439,7 +440,6 @@ class Shop extends React.Component {
         }
       }
       myGold -= champCost * storeCount;
-      console.log(myStage);
       this.setState ({
         store: myStore,
         gold: myGold,
