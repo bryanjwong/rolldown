@@ -121,8 +121,8 @@ export default class App extends React.Component {
   }
 
   handleChampClick(i) {
+    let myStage = this.state.stage;
     if(this.state.heldChamp !== null && i !== this.state.heldChamp) {
-      let myStage = this.state.stage;
       let temp = myStage[i];
 
       myStage[i] = myStage[this.state.heldChamp];
@@ -135,6 +135,7 @@ export default class App extends React.Component {
       return;
     }
     if(this.state.dragging === false) {
+      if(myStage[i]['name'] === "") return;
       this.setState({
         dragging: true,
         heldChamp: i
@@ -170,7 +171,6 @@ export default class App extends React.Component {
     if(!e.target.value) return;
     let levelValue = (e.target.value >= 2) ? e.target.value : 2;
     levelValue = (levelValue < 10) ? levelValue : 9;
-    console.log(e.target.value);
     this.setState({
       level: levelValue,
       xp: 0
@@ -383,7 +383,7 @@ export default class App extends React.Component {
       }
     }
     if(stageCount === 0) {
-      return
+      return;
     }
     if((storeCount + stageCount) >= 3) {
       myStore[i] = {
@@ -415,6 +415,7 @@ export default class App extends React.Component {
           }
         }
       }
+      if(myGold < champCost * storeCount) return;
       myGold -= champCost * storeCount;
       this.setState ({
         store: myStore,
@@ -435,7 +436,7 @@ export default class App extends React.Component {
       <div onKeyDown={this.handleKeyPress}>
         <img className="background" src={images['tft-map-background.jpg']}/>
         <div className="title" >
-          <a href="/index.html">
+          <a href="/rolldown/index.html">
             rolldown.gg
             <FontAwesomeIcon icon={faDice} className="logo"/>
           </a>

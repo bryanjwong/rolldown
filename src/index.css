@@ -287,6 +287,7 @@ div.wrap {height:100%; overflow:hidden;}
   width: 100%;
   top: 0px;
   text-align: left;
+  border: none;
 }
 
 .refresh-btn {
@@ -295,6 +296,7 @@ div.wrap {height:100%; overflow:hidden;}
   width: 100%;
   bottom: 0px;
   text-align: left;
+  border: none;
 }
 
 .display-bar {
@@ -429,11 +431,6 @@ div.wrap {height:100%; overflow:hidden;}
 .glow-when-hovered img {
 
  opacity: 0.8;
-
- /*Transition*/
- -webkit-transition: all 0.5s ease;
- -moz-transition: all 0.5s ease;
- -o-transition: all 0.5s ease;
 
  /*Reflection*/
  -webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0,0,0,0.1)));
