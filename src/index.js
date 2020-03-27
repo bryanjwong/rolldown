@@ -178,7 +178,7 @@ class App extends React.Component {
       });
     }
     let myStage = {};
-    for(let i = 0; i < 10; i++) {
+    for(let i = 0; i < 9; i++) {
       myStage[i] = {
         name: "",
         cost: 0,
@@ -328,7 +328,7 @@ class App extends React.Component {
     const champCost = myStore[i]['cost'];
 
     // If we can buy enough copies to make an upgrade, do so
-    if(myStageLength === 10) {
+    if(myStageLength === 9) {
       this.checkForOverflowCombine(i, myStageLength);
       return;
     }
@@ -342,7 +342,7 @@ class App extends React.Component {
       cost: 0,
       traits: []
     };
-    for(let j = 0; j < 10; j++) {
+    for(let j = 0; j < 9; j++) {
       if(myStage[j]['name'] === "") {
         myStage[j] = {
           name: champName,
@@ -391,7 +391,7 @@ class App extends React.Component {
       3: [],
     }
     let myStage = this.state['stage'];
-    for(let i = 0; i < 10; i++) {
+    for(let i = 0; i < 9; i++) {
       let champion = myStage[i];
       if(champion['name'] === champName) {
         let champLevel = champion['level'];
@@ -432,7 +432,7 @@ class App extends React.Component {
         storeCount++;
       }
     }
-    for(let j = 0; j < 10; j++) {
+    for(let j = 0; j < 9; j++) {
       if(myStage[j]['name'] === champName && myStage[j]['level'] === 1) {
         stageCount++;
       }
@@ -458,7 +458,7 @@ class App extends React.Component {
       }
 
       var upgraded = false;
-      for(let j = 0; j < 10; j++) {
+      for(let j = 0; j < 9; j++) {
         if(myStage[j]['name'] === champName && myStage[j]['level'] === 1) {
           if(!upgraded) {
             myStage[j]['level']++;
@@ -560,7 +560,7 @@ class ChampionStage extends React.Component {
   render() {
     const stage = this.props.stage;
     const championIcons = [];
-    for(let i = 0; i < 10; i++) {
+    for(let i = 0; i < 9; i++) {
       championIcons.push(<ChampionStageTile
         key={i} champion={stage[i]}
         onMouseOver={() => this.props.onMouseOver(i)}
@@ -670,11 +670,14 @@ class ChampionStageTile extends React.Component {
     e.preventDefault();
   }
 
-  onMouseUp() {
+  onMouseUp(e) {
     if (!this.props.dragging || !this.state.active) {
       this.returnToInitialPos();
+      console.log("mouseup");
       return;
     }
+    e.stopPropagation();
+    e.preventDefault();
   }
 
   render() {
@@ -694,7 +697,7 @@ class ChampionStageTile extends React.Component {
           zIndex: zIndex
         }}
       >
-          <div className="empty-tile"></div>
+        <div className="empty-tile"></div>
       </div>);
     }
     return(

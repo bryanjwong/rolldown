@@ -26,10 +26,12 @@ div.wrap {height:100%; overflow:hidden;}
 
 .background {
   position: absolute;
-  width: 100%;
-  height: 120%;
-  bottom: -10%;
+  width: 120%;
+  height: 150%;
+  bottom: 0px;
   z-index: -2;
+  left: 69.5%;
+  transform: translate(-65%, 0);
 }
 
 .sm-font {
@@ -260,7 +262,7 @@ div.wrap {height:100%; overflow:hidden;}
 .champ-stage-tile {
   position: relative;
   border: none;
-  width: 10%;
+  width: 11.11%;
 }
 
 .empty-tile {
@@ -315,8 +317,8 @@ div.wrap {height:100%; overflow:hidden;}
 
 .champ-stage {
   position: fixed;
-  bottom: 50%;
+  bottom: 48%;
   left: 50%;
   transform: translate(-50%, 0);
-  width: 75%;
+  width: 71%;
 }
