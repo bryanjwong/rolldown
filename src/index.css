@@ -263,6 +263,13 @@ div.wrap {height:100%; overflow:hidden;}
   width: 10%;
 }
 
+.empty-tile {
+  position: absolute;
+  background: Transparent;
+  height: 12vh;
+  width: 100%;
+}
+
 .glow-when-hovered img {
 
  opacity: 0.8;

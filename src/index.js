@@ -208,12 +208,12 @@ class App extends React.Component {
         this.refreshClicked();
         break;
       case SELL_UNIT_KEY:
-        console.log(this.state.hovered)
-        if(this.state.hovered.length > 0) {
-          this.sellChamp(this.state.hovered[0]);
-        }
         let myHovered = this.state.hovered;
-        myHovered.splice(0, 1);
+        let myStage = this.state.stage;
+        for(var i = 0; i < myHovered.length && myStage[myHovered[i]]['name'] === ""; i++) {}
+        if(i >= myHovered.length) return;
+        this.sellChamp(this.state.hovered[i]);
+        myHovered.splice(i, 1);
         this.setState({
           hovered: myHovered
         });
@@ -482,6 +482,7 @@ class App extends React.Component {
   }
 
   handleSetDown(i) {
+    console.log(i);
     if(this.state.heldChamp !== null && i !== this.state.heldChamp) {
       let myStage = this.state.stage;
       let temp = myStage[i];
@@ -651,7 +652,6 @@ class ChampionStageTile extends React.Component {
       });
     }
     this.props.handleSetDown();
-    //e.stopPropagation();
     e.preventDefault();
   }
 
@@ -680,12 +680,23 @@ class ChampionStageTile extends React.Component {
   render() {
     if(!this.props.dragging && this.props.active) this.returnToInitialPos();
     const champion = this.props.champion;
-    if(champion['name'] === "") {
-      return <div className="champ-stage-tile"></div>;
-    }
     let iconPath = "icons/" + champion['name'].replace(" ", "").replace("'", "") + ".png";
     let starPath = "star" + champion['level'].toString() + ".png";
     let zIndex = this.state.active ? 1 : 2;
+
+    if(champion['name'] === "") {
+      return (<div className="champ-stage-tile"
+        onMouseOver={this.props.onMouseOver}
+        onMouseLeave={this.props.onMouseLeave}
+        onMouseDown={this.onMouseDown}
+        onMouseUp={this.onMouseUp}
+        style={{
+          zIndex: zIndex
+        }}
+      >
+          <div className="empty-tile"></div>
+      </div>);
+    }
     return(
       <div className="champ-stage-tile">
         <div
