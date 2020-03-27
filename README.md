@@ -1,68 +1,60 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Rolldown
 
-## Available Scripts
+Rolldown is a personal project I created (during the coronavirus outbreak) that
+simulates the act of "rolling down" in the video game [Teamfight Tactics (TFT)](https://na.leagueoflegends.com/en/featured/events/teamfight-tactics),
+developed by Riot Games.
 
-In the project directory, you can run:
+## Teamfight Tactics
+For those who are not familiar, TFT is an "Autochess" game where 8 players each
+start with a finite life total, and take turns dueling each other with
+purchasable AI units. Each player accrues gold and EXP over time, which help
+with obtaining and upgrading these units into a sizable army. These units each
+have unique abilities and synergies, with 5 being randomly offered to the player
+each round. Players are also given the option of spending gold to "roll" a new
+set of 5 units. The game ends when only one player and their army is left
+remaining.
 
-### `npm start`
+One crucial and mechanically intensive portion of any game in TFT is a point
+where the player must *"roll down"* all their gold- that is, spend a large portion
+or even all of their gold to rapidly search for units that will strengthen their
+army. Although this skill is very important (and challenging), it only happens
+a few times per game, so players do not get many opportunities to train this
+skill. To combat this issue, I developed Rolldown so players could specifically
+practice this skill in a sandbox environment.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## How to Use
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Rolldown's UI closely mimics that of the actual TFT Shop UI, and most of the
+functionality is the same.
 
-### `npm test`
+Champions can be purchased by clicking on their icons in the store, causing them
+to appear on the board. These bought champions can then be clicked and shifted
+around, swapped, or sold back to the store for gold. The buttons on the left side
+of the UI can be used to purchase XP or rerolls. The gold and level fields can
+also be manually set to a desired value.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The keyboard icon on the top right of the screen can be clicked to open or close
+the keybind menu, where you can configure your keybinds to allow you to more
+conveniently buy XP, reroll, or sell champions by hovering over them. Once the
+keybind menu is open, simply click on the current binding (represented by keycode)
+and enter the new desired binding.
 
-### `npm run build`
+## Built with Love
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This was my first project with Javascript and React, and through a ton of
+Googling, I learned a lot!
+Here's a list of the frameworks/tools I used to build
+Rolldown:
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+- React
+- React-Bootstrap
+- Font-Awesome
+- [TFT Developer Portal Assets](https://developer.riotgames.com/docs/tft)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Disclaimer
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+This project was intended for educational, non-monetary purposes and is in no
+way affiliated with Riot Games or Teamfight Tactics. All intellectual properties
+and assets belong to their respective owners. I'm grateful to Riot Games for
+being supportive of their developers by releasing these assets, and also for
+making my favorite games! :)
