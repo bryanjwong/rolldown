@@ -125,6 +125,7 @@ export default class App extends React.Component {
   handleChampClick(i) {
     let myStage = this.state.stage;
     let player = new Audio(audio['drop.ogg']);
+    player.volume = 0.2
     // Swap spots
     if(this.state.heldChamp !== null && i !== this.state.heldChamp) {
       let temp = myStage[i];
@@ -169,8 +170,7 @@ export default class App extends React.Component {
   handleGoldInput(e) {
     let goldValue = e.target.value > -1 ? e.target.value : 0;
     goldValue = goldValue < 1000 ? goldValue : 999;
-    let player = new Audio(audio["gold.ogg"]);
-    player.play();
+    this.playSound('gold.ogg');
     this.setState({
       gold: goldValue
     });
@@ -180,8 +180,7 @@ export default class App extends React.Component {
     if(!e.target.value) return;
     let levelValue = (e.target.value >= 2) ? e.target.value : 2;
     levelValue = (levelValue < 10) ? levelValue : 9;
-    let player = new Audio(audio["buyxp.ogg"]);
-    player.play();
+    this.playSound('buyxp.ogg');
     this.setState({
       level: levelValue,
       xp: 0
@@ -194,16 +193,14 @@ export default class App extends React.Component {
     if(this.state['level'] === 9 || this.state['gold'] < 4) {
       return;
     }
-    let player = new Audio(audio['buyxp.ogg']);
-    player.play();
+    this.playSound('buyxp.ogg');
     var gold = this.state['gold'] - 4;
     var xp = this.state['xp'] + 4;
     var level = this.state['level'];
     if(xp >= Constants.XP_THRESH[level]) {
       xp -= Constants.XP_THRESH[level];
       level++;
-      let player = new Audio(audio['playerlevelup.ogg']);
-      player.play();
+      this.playSound('playerlevelup.ogg');
     }
     this.setState ({
       level: level,
@@ -216,8 +213,7 @@ export default class App extends React.Component {
     if(this.state['gold'] < 2) {
       return;
     }
-    let player = new Audio(audio['refresh.ogg']);
-    player.play();
+    this.playSound('refresh.ogg');
     let gold = this.state['gold'] - 2;
     this.setState ({
       gold: gold
@@ -286,8 +282,7 @@ export default class App extends React.Component {
     if(myGold < champCost || champCost === 0) {
       return;
     }
-    let player = new Audio(audio['buychamp.ogg']);
-    player.play();
+    this.playSound('buychamp.ogg');
     myGold -= champCost;
     myStageLength++;
     myStore[i] = {
@@ -338,6 +333,7 @@ export default class App extends React.Component {
     }
     const randSFX = Math.floor(Math.random() * 5);
     let player = new Audio(audio['sellchamp' + randSFX.toString() + '.ogg']);
+    player.volume = 0.04;
     player.play();
     myGold += Constants.SELL_RATE[champCost][champLevel - 1];
     myStage[i] = {
@@ -389,8 +385,7 @@ export default class App extends React.Component {
           });
           let newChampLevel = myStage[champOccurences[champLevel][0]]['level'];
           let audioPath = "champlevelup" + newChampLevel.toString() + ".ogg";
-          let player = new Audio(audio[audioPath]);
-          player.play();
+          this.playSound(audioPath);
           this.checkForThree(champName, myStageLength);
         }
       }
@@ -453,11 +448,9 @@ export default class App extends React.Component {
         }
       }
       myGold -= champCost * storeCount;
-      let player = new Audio(audio['buychamp.ogg']);
-      player.play();
+      this.playSound('buychamp.ogg');
       let audioPath = "champlevelup" + newChampLevel.toString() + ".ogg";
-      player = new Audio(audio[audioPath]);
-      player.play();
+      this.playSound(audioPath);
       this.setState ({
         store: myStore,
         gold: myGold,
@@ -466,6 +459,12 @@ export default class App extends React.Component {
       });
       this.checkForThree(champName, myStageLength);
     }
+  }
+
+  playSound(soundName) {
+    let player = new Audio(audio[soundName]);
+    player.volume = 0.08;
+    player.play();
   }
 
   render() {
@@ -484,8 +483,7 @@ export default class App extends React.Component {
         </div>
         <KeybindButton onClick={() => {
           let audioPath = this.state.keybindMenuHidden ? "menuopen.ogg" : "menuclose.ogg";
-          let player = new Audio(audio[audioPath]);
-          player.play();
+          this.playSound(audioPath);
           this.setState({
             keybindMenuHidden: !this.state.keybindMenuHidden
           });
@@ -493,8 +491,7 @@ export default class App extends React.Component {
         <a href="https://github.com/bryanjwong/rolldown" target="_blank" rel="noopener noreferrer">
           <FontAwesomeIcon icon={faGithub} className="github-link clickable"
             onClick={() => {
-            let player = new Audio(audio['urf.ogg']);
-            player.play();
+            this.playSound('urf.ogg');
           }}/>
         </a>
         <ChampionStage
