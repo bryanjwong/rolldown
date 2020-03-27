@@ -12,8 +12,30 @@ ol, ul {
   padding-left: 30px;
 }
 
+input {
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: hidden;
+  background-color: Transparent;
+  outline: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 a, a:hover {
-  color: #FFFFFF
+  color: #FFFFFF;
+  text-decoration: none;
 }
 
 h1 {
@@ -82,19 +104,23 @@ div.wrap {height:100%; overflow:hidden;}
   margin-left: 0.5%;
 }
 
+.github-link {
+  position: absolute;
+  color: #FFFFFF;
+  top: 15%;
+  right: 2.3%;
+  font-size: 3.5vw;
+}
+
 .keybind-button {
   position: absolute;
   color: #FFFFFF;
-  top: 3%;
+  top: 5%;
   right: 2%;
   font-size: 3.5vw;
 }
 
-.keybind-button:hover {
-  cursor: pointer;
-}
-
-.logo:hover, .keybind-button:hover {
+.logo:hover, .keybind-button:hover, .github-link:hover {
   animation: pulse 1s infinite;
   animation-timing-function: linear;
 }
@@ -114,7 +140,7 @@ div.wrap {height:100%; overflow:hidden;}
 
 .keybind-menu-text {
   color: #FFFFFF;
-  font-size: 2vw;
+  font-size: 1.5vw;
   position: absolute;
   right: -80%;
   bottom: 0%;
@@ -295,7 +321,7 @@ div.wrap {height:100%; overflow:hidden;}
 .exp {
   color: #FFFFFF;
   position: relative;
-  margin-left: 7%;
+  margin-left: 5%;
 }
 
 .reroll-odds {
@@ -341,9 +367,19 @@ div.wrap {height:100%; overflow:hidden;}
   color: #FFFFFF;
   font-size: 1.3vw;
   position: fixed;
-  transform: translate(-50%, 0);
-  left: 50%;
+  transform: translate(-50.5%, 0);
+  left: 50.5%;
   top: 7.5%;
+}
+
+.gold-input {
+  color: #FFFFFF;
+  width: 3vw;
+}
+
+.level-input {
+  color: #FFFFFF;
+  width: 2vw;
 }
 
 .sell-champ-content {

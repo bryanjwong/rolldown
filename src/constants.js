@@ -23,7 +23,7 @@ export const CHAMPION_TOTAL_AMOUNT = {
   4: 12,
   5: 10
 }
-
+export var KEYBINDS = [[65, "Buy XP"], [68, "Reroll"], [69, "Sell Champion"]];
 
 const ChampionData = require("./json/champions.json");
 export var championPool = {
