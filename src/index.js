@@ -208,9 +208,15 @@ class App extends React.Component {
         this.refreshClicked();
         break;
       case SELL_UNIT_KEY:
+        console.log(this.state.hovered)
         if(this.state.hovered.length > 0) {
           this.sellChamp(this.state.hovered[0]);
         }
+        let myHovered = this.state.hovered;
+        myHovered.splice(0, 1);
+        this.setState({
+          hovered: myHovered
+        });
         break;
       default:
     }
@@ -353,7 +359,6 @@ class App extends React.Component {
       stageLength: myStageLength
     });
     this.checkForThree(champName, myStageLength);
-    console.log(myStageLength);
   }
 
   sellChamp(i) {
@@ -409,7 +414,6 @@ class App extends React.Component {
             stageLength: myStageLength
           });
           this.checkForThree(champName, myStageLength);
-          console.log(myStageLength);
         }
       }
     }
@@ -474,13 +478,23 @@ class App extends React.Component {
         stageLength: myStageLength
       });
       this.checkForThree(champName, myStageLength);
-      console.log(myStageLength);
     }
   }
 
   handleSetDown(i) {
-    console.log(i);
-    if(this.state.heldChamp !== null && i !== this.state.heldChamp) return;
+    if(this.state.heldChamp !== null && i !== this.state.heldChamp) {
+      let myStage = this.state.stage;
+      let temp = myStage[i];
+
+      myStage[i] = myStage[this.state.heldChamp];
+      myStage[this.state.heldChamp] = temp;
+      this.setState({
+        stage: myStage,
+        dragging: false,
+        heldChamp: null
+      });
+      return;
+    }
     if(this.state.dragging === false) {
       this.setState({
         dragging: true,
@@ -490,7 +504,6 @@ class App extends React.Component {
     }
     let clickedTile = null;
     let myHovered = this.state.hovered;
-    console.log(myHovered);
     for(let element of myHovered) {
       if(element != i)
         clickedTile = element;
@@ -502,19 +515,6 @@ class App extends React.Component {
       })
       return;
     }
-
-    let myStage = this.state.stage;
-    let temp = myStage[i];
-
-    console.log(myStage);
-    console.log(temp);
-    myStage[i] = myStage[clickedTile];
-    myStage[clickedTile] = temp;
-    this.setState({
-      stage: myStage,
-      dragging: false,
-      heldChamp: null
-    });
   }
 
   render() {
@@ -590,7 +590,9 @@ class ChampionStageTile extends React.Component {
       active: false,
     }
     this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
+    this.returnToInitialPos = this.returnToInitialPos.bind(this);
   }
 
   // we could get away with not having this (and just having the listeners on
@@ -607,18 +609,26 @@ class ChampionStageTile extends React.Component {
     }
   }
 
+  returnToInitialPos() {
+    this.setState({
+      rel: {
+        x: 0,
+        y: 0
+      },
+      pos: {
+        x: 0,
+        y: 0
+      },
+      active: false
+    });
+  }
+
   // calculate relative position to the mouse and set dragging=true
   onMouseDown(e) {
     // only left mouse button
     if (e.button !== 0) return;
-    // don't pick up two at the same time
-    if (this.props.dragging && !this.state.active) {
-      this.props.handleSetDown();
-      return;
-    }
-    console.log(e);
-    var pos = $(ReactDOM.findDOMNode(this)).offset();
-    if(this.props.dragging && this.state.active) {
+
+    if(this.state.active || this.props.dragging) {
       this.setState({
         rel: {
           x: 0,
@@ -641,12 +651,15 @@ class ChampionStageTile extends React.Component {
       });
     }
     this.props.handleSetDown();
-    e.stopPropagation();
+    //e.stopPropagation();
     e.preventDefault();
   }
 
   onMouseMove(e) {
-    if (!this.props.dragging || !this.state.active) return;
+    if (!this.state.active) {
+      this.returnToInitialPos();
+      return;
+    }
     this.setState({
       pos: {
         x: e.pageX - this.state.rel.x,
@@ -657,22 +670,33 @@ class ChampionStageTile extends React.Component {
     e.preventDefault();
   }
 
+  onMouseUp() {
+    if (!this.props.dragging || !this.state.active) {
+      this.returnToInitialPos();
+      return;
+    }
+  }
+
   render() {
+    if(!this.props.dragging && this.props.active) this.returnToInitialPos();
     const champion = this.props.champion;
     if(champion['name'] === "") {
       return <div className="champ-stage-tile"></div>;
     }
     let iconPath = "icons/" + champion['name'].replace(" ", "").replace("'", "") + ".png";
     let starPath = "star" + champion['level'].toString() + ".png";
+    let zIndex = this.state.active ? 1 : 2;
     return(
       <div className="champ-stage-tile">
         <div
-        onClick={this.onMouseDown}
+        onMouseDown={this.onMouseDown}
+        onMouseUp={this.onMouseUp}
         style={{
           position: 'absolute',
           left: this.state.pos.x + 'px',
           top: this.state.pos.y + 'px',
-          width: '100%'
+          width: '100%',
+          zIndex: zIndex
         }}>
           <div className="glow-when-hovered">
             <img className="stage-icon" src={images[iconPath]}
