@@ -44,7 +44,8 @@ export default class App extends React.Component {
       myStage[i] = {
         name: "",
         cost: 0,
-        level: 0
+        level: 0,
+        traits: []
       };
     }
     this.state = {
@@ -275,6 +276,7 @@ export default class App extends React.Component {
     let myStageLength = this.state.stageLength;
     const champName = myStore[i]['name'];
     const champCost = myStore[i]['cost'];
+    const champTraits = myStore[i]['traits'];
 
     // If we can buy enough copies to make an upgrade, do so
     if(myStageLength === 9) {
@@ -298,7 +300,8 @@ export default class App extends React.Component {
         myStage[j] = {
           name: champName,
           cost: champCost,
-          level: 1
+          level: 1,
+          traits: champTraits
         }
         break;
       }
@@ -329,6 +332,10 @@ export default class App extends React.Component {
       myDragging = false;
       myHeldChamp = null;
     }
+    let champion = myStage[i];
+    for(let i = 0; i < 3**(champLevel-1); i++) {
+      Constants.championPool[champCost].push(champion);
+    }
     const randSFX = Math.floor(Math.random() * 5);
     let player = new Audio(audio['sellchamp' + randSFX.toString() + '.ogg']);
     player.play();
@@ -336,7 +343,8 @@ export default class App extends React.Component {
     myStage[i] = {
       name: "",
       cost: 0,
-      level: 0
+      level: 0,
+      traits: []
     };
     this.setState({
       gold: myGold,
@@ -345,7 +353,6 @@ export default class App extends React.Component {
       heldChamp: myHeldChamp,
       dragging: myDragging
     });
-
   }
 
   // Check if an upgrade is possible
@@ -361,18 +368,20 @@ export default class App extends React.Component {
       if(champion['name'] === champName) {
         let champLevel = champion['level'];
         champOccurences[champLevel].push(i);  // log store index where found
-        if(champOccurences[champLevel].length === 3) {
+        if(champOccurences[champLevel].length === 3 && champLevel < 3) {
           myStageLength -= 2;
           myStage[champOccurences[champLevel][0]]['level']++;
           myStage[champOccurences[champLevel][1]] = {
             name: "",
             cost: 0,
-            level: 0
+            level: 0,
+            traits: []
           };
           myStage[champOccurences[champLevel][2]] = {
             name: "",
             cost: 0,
-            level: 0
+            level: 0,
+            traits: []
           };
           this.setState({
             stage: myStage,
