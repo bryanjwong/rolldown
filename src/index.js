@@ -21,9 +21,7 @@ function importAll(r) {
 }
 const images = importAll(require.context('./images', true, /\.(png|jpe?g|svg)$/));
 
-const REFRESH_KEY = 68;
-const BUY_XP_KEY = 65;
-const SELL_UNIT_KEY = 69;
+let KEYBINDS = [[65, "Buy XP"], [68, "Reroll"], [69, "Sell Champion"]];
 
 class ChampionTile extends React.Component {
   constructor(props) {
@@ -205,20 +203,21 @@ class App extends React.Component {
       stageLength: 0,
       hovered: [],
       dragging: false,
-      heldChamp: null
+      heldChamp: null,
+      keybindMenuHidden: true
     };
     this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   handleKeyPress(e) {
     switch (e.keyCode) {
-      case BUY_XP_KEY:
+      case KEYBINDS[0][0]:
         this.buyXPClicked()
         break;
-      case REFRESH_KEY:
+      case KEYBINDS[1][0]:
         this.refreshClicked();
         break;
-      case SELL_UNIT_KEY:
+      case KEYBINDS[2][0]:
         let myHovered = this.state.hovered;
         let myStage = this.state.stage;
         for(var i = 0; i < myHovered.length && myStage[myHovered[i]]['name'] === ""; i++) {}
@@ -502,7 +501,6 @@ class App extends React.Component {
   }
 
   handleSetDown(i) {
-    console.log(i);
     if(this.state.heldChamp !== null && i !== this.state.heldChamp) {
       let myStage = this.state.stage;
       let temp = myStage[i];
@@ -542,20 +540,22 @@ class App extends React.Component {
     const level = this.state['level'];
     const xp_text = (level === 9) ? "Max" : this.state['xp'] + "/" + Constants.XP_THRESH[level];
     const heldChamp = this.state.stage[this.state.heldChamp];
-    const sellCost = heldChamp ? Constants.SELL_RATE[heldChamp['cost']][heldChamp['level'] - 1] : 0;
+    const sellCost = (heldChamp && heldChamp['name'] != "") ? Constants.SELL_RATE[heldChamp['cost']][heldChamp['level'] - 1] : 0;
     return (
       <div onKeyDown={this.handleKeyPress}>
         <img className="background" src={images['tft-map-background.jpg']}/>
-        <div class="title" >
+        <div className="title" >
           <a href="/index.html" style={{textDecoration: "none"}}>
             rolldown.gg
             <FontAwesomeIcon icon={faDice} className="logo" style={{filter: "drop-shadow"}}/>
           </a>
         </div>
 
-          <KeybindButton/>
-      
-
+        <KeybindButton onClick={() => {
+          this.setState({
+            keybindMenuHidden: !this.state.keybindMenuHidden
+          });
+        }}/>
         <ChampionStage
           stage={this.state['stage']}
           onMouseOver={(i) => this.handleMouseOver(i)}
@@ -585,6 +585,8 @@ class App extends React.Component {
           <SellChampButton
             onClick={() => this.sellChamp(this.state.heldChamp)}
             sellCost={sellCost}/>
+          <KeybindMenu
+            hidden={this.state.keybindMenuHidden}/>
         </div>
       </div>
     )
@@ -593,8 +595,77 @@ class App extends React.Component {
 
 function KeybindButton(props) {
   return (
-    <FontAwesomeIcon icon={faKeyboard} className="keybind-button"/>
+    <FontAwesomeIcon icon={faKeyboard}
+      className="keybind-button"
+      onClick={props.onClick}/>
   );
+}
+
+class KeybindMenu extends React.Component {
+  render() {
+    if(this.props.hidden) {
+      return null;
+    } else {
+      return (
+        <div className="sell-champ-content">
+          <img className="sell-champ-background" src={images['sell-champ-background.png']}/>
+          <div className="keybind-menu row">
+            <div className="keybind-menu-text">Keybinds</div>
+            <KeyListener keybindNumber={0}/>
+            <KeyListener keybindNumber={1}/>
+            <KeyListener keybindNumber={2}/>
+          </div>
+        </div>
+      );
+    }
+  }
+}
+
+class KeyListener extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      active: false,
+      keybindNumber: this.props.keybindNumber
+    }
+    this.handleClick = this.handleClick.bind(this);
+    this.changeKeybind = this.changeKeybind.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.changeKeybind);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.changeKeybind);
+  }
+
+  changeKeybind(e) {
+    if(!this.state.active) return;
+    KEYBINDS[this.state.keybindNumber][0] = e.keyCode;
+    this.setState({
+      active: false
+    })
+    console.log("Keybind changed to " + e.keyCode);
+  }
+
+  handleClick() {
+    this.setState({
+      active: true
+    });
+  }
+  render() {
+    let keyCode = this.state.active ? "_" : KEYBINDS[this.state.keybindNumber][0];
+    return(
+      <div className="key-listener-content"
+        onClick={this.handleClick}
+        onKeyDown={this.changeKeybind}
+      >
+        <div className="key-name">{keyCode}</div>
+        <div className="key-function med-font">{KEYBINDS[this.state.keybindNumber][1]}</div>
+      </div>
+    );
+  }
 }
 
 class ChampionStage extends React.Component {
@@ -714,7 +785,6 @@ class ChampionStageTile extends React.Component {
   onMouseUp(e) {
     if (!this.props.dragging || !this.state.active) {
       this.returnToInitialPos();
-      console.log("mouseup");
       return;
     }
     e.stopPropagation();

@@ -16,6 +16,10 @@ a, a:hover {
   color: #FFFFFF
 }
 
+h1 {
+  color: #FFFFFF;
+  font-size: 3.5vw;
+}
 h6 {
   margin-right: 10px;
 }
@@ -23,14 +27,17 @@ h6 {
 div.wrap {height:100%; overflow:hidden;}
 
 .sm-font {
+  color: #FFFFFF;
   font-size: 1vw;
 }
 
 .med-font {
+  color: #FFFFFF;
   font-size: 1.2vw;
 }
 
 .lrg-font {
+  color: #FFFFFF;
   font-size: 1.7vw;
 }
 
@@ -97,6 +104,61 @@ div.wrap {height:100%; overflow:hidden;}
   50% { transform: scale(1.1);
   100% { transform: scale(1); }
   }
+}
+
+.keybind-menu {
+  position: absolute;
+  left: 20%;
+  top: 20%;
+}
+
+.keybind-menu-text {
+  color: #FFFFFF;
+  font-size: 2vw;
+  position: absolute;
+  right: -80%;
+  bottom: 0%;
+}
+
+.key-listener-content {
+  position: relative;
+  text-align: center;
+  margin: -10px 20px 0px 10px;
+}
+
+.key-function {
+  margin-top: 0.6vh;
+}
+
+.key-name {
+  font-size: 5vw;
+  color: #FFFFFF;
+  height: 13vh;
+  width: 8vw;
+  padding: 0px 8px 0px 8px;
+  border-radius: 20px;
+  background-color: rgb(255, 255, 255, 0.2);
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.key-name:hover {
+  animation: shake 1s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shake{
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
 .shop-tile {
@@ -299,12 +361,10 @@ div.wrap {height:100%; overflow:hidden;}
 
 .sell-champ-text {
   position: absolute;
-  left: 29%;
+  left: 30%;
   bottom: 25%;
   width: 40%;
   font-size: 2vw;
-
-
 }
 
 .shop {
