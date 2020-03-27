@@ -482,7 +482,11 @@ export default class App extends React.Component {
           });
         }}/>
         <a href="https://github.com/bryanjwong/rolldown" target="_blank" rel="noopener noreferrer">
-          <FontAwesomeIcon icon={faGithub} className="github-link clickable"/>
+          <FontAwesomeIcon icon={faGithub} className="github-link clickable"
+            onClick={() => {
+            let player = new Audio(audio['urf.ogg']);
+            player.play();
+          }}/>
         </a>
         <ChampionStage
           stage={this.state['stage']}
