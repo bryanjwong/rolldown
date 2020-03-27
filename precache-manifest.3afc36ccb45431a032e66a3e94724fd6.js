@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6d98e1260362a8f4cd7b4947701aabd7",
+    "revision": "0f035cd8d83875dfbc2bad630e35da7c",
     "url": "/rolldown/index.html"
   },
   {
-    "revision": "0562adb356ec473f1f92",
-    "url": "/rolldown/static/css/main.86714022.chunk.css"
+    "revision": "a633760bcbccfc9c5c1e",
+    "url": "/rolldown/static/css/main.71c0fa7b.chunk.css"
   },
   {
-    "revision": "43aa6b95dfdc40ce0578",
-    "url": "/rolldown/static/js/2.eaac25f2.chunk.js"
+    "revision": "5eba1e30419ca3c9a948",
+    "url": "/rolldown/static/js/2.fe967409.chunk.js"
   },
   {
     "revision": "e88a3e95b5364d46e95b35ae8c0dc27d",
-    "url": "/rolldown/static/js/2.eaac25f2.chunk.js.LICENSE.txt"
+    "url": "/rolldown/static/js/2.fe967409.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "0562adb356ec473f1f92",
-    "url": "/rolldown/static/js/main.0745fbc3.chunk.js"
+    "revision": "a633760bcbccfc9c5c1e",
+    "url": "/rolldown/static/js/main.99cd39aa.chunk.js"
   },
   {
     "revision": "f5e4923bcd4933bdd472",
@@ -480,8 +480,48 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/rolldown/static/media/buy-xp-hovered.7b11f0a2.png"
   },
   {
+    "revision": "b340ce38a0b96ee2d17f314e77bdafa5",
+    "url": "/rolldown/static/media/buychamp.b340ce38.ogg"
+  },
+  {
+    "revision": "3686cb1e406b431d5f7a4f5cf9174197",
+    "url": "/rolldown/static/media/buyxp.3686cb1e.ogg"
+  },
+  {
+    "revision": "1396dea8f2ffda1e82f6510c73b37a55",
+    "url": "/rolldown/static/media/champlevelup2.1396dea8.ogg"
+  },
+  {
+    "revision": "7d4420f786877de6b5334b8e0e111c4c",
+    "url": "/rolldown/static/media/champlevelup3.7d4420f7.ogg"
+  },
+  {
+    "revision": "0087725040bddfe639dec97d108bc69e",
+    "url": "/rolldown/static/media/drop.00877250.ogg"
+  },
+  {
+    "revision": "d4e57d30a1f92aa0b5defef07cc4ad7d",
+    "url": "/rolldown/static/media/gold.d4e57d30.ogg"
+  },
+  {
     "revision": "6c119189f72a9f595bcbb47095862a9b",
     "url": "/rolldown/static/media/malphite.6c119189.png"
+  },
+  {
+    "revision": "5a0dd06c3a17e1ce0339880606345659",
+    "url": "/rolldown/static/media/menuclose.5a0dd06c.ogg"
+  },
+  {
+    "revision": "28f29af81ae4d7c6aac6662f80df0c57",
+    "url": "/rolldown/static/media/menuopen.28f29af8.ogg"
+  },
+  {
+    "revision": "de0fb03153e146955cdc78e790d80564",
+    "url": "/rolldown/static/media/pickup.de0fb031.ogg"
+  },
+  {
+    "revision": "437b7fe1513c20ad9fd89692f13379bd",
+    "url": "/rolldown/static/media/playerlevelup.437b7fe1.ogg"
   },
   {
     "revision": "03a4849817e1bbcbf6e289f9c64a6fd7",
@@ -492,8 +532,32 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/rolldown/static/media/refresh-hovered.db9df7f6.png"
   },
   {
+    "revision": "530eec2578747460d3105d02c7458310",
+    "url": "/rolldown/static/media/refresh.530eec25.ogg"
+  },
+  {
     "revision": "fe2e0913f585e5466890ad3f73e76e3e",
     "url": "/rolldown/static/media/refresh.fe2e0913.png"
+  },
+  {
+    "revision": "c3108dc77a21fed55deb85ed4d399382",
+    "url": "/rolldown/static/media/sellchamp0.c3108dc7.ogg"
+  },
+  {
+    "revision": "2d2aed94a44fab5b8ffe3c7bc4c2c750",
+    "url": "/rolldown/static/media/sellchamp1.2d2aed94.ogg"
+  },
+  {
+    "revision": "f81a83bb3c2fed72926033ab0b4aba82",
+    "url": "/rolldown/static/media/sellchamp2.f81a83bb.ogg"
+  },
+  {
+    "revision": "5fecf857a4bbff47e053f300c808da98",
+    "url": "/rolldown/static/media/sellchamp3.5fecf857.ogg"
+  },
+  {
+    "revision": "e3aebda510eed7084a30d7f29ab9bd95",
+    "url": "/rolldown/static/media/sellchamp4.e3aebda5.ogg"
   },
   {
     "revision": "8f9e2fb088bf7d85a03ec9055961d4f8",
