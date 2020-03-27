@@ -2,13 +2,14 @@ import React from "react"
 import ReactDOM from "react-dom"
 import $ from "jquery"
 import "./index.css"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDice } from '@fortawesome/free-solid-svg-icons'
+import { faKeyboard } from '@fortawesome/free-solid-svg-icons'
 import * as Constants from "./constants.js"
 
 /* Todos:
     Set keybinds
     Set Gold/Exp
-    Grab champs to sell them
-    Swap champion places
     View specific odds of rolling a champ
     ADD SOUNDS
 */
@@ -134,7 +135,6 @@ function RefreshButton(props) {
   return (
     <button
       className="refresh-btn clickable"
-      // onClick={props.refreshClicked()}
       onClick={props.onClick}
       onMouseOver={handleMouseOver}
       onMouseLeave={handleMouseLeave}
@@ -163,6 +163,17 @@ function RerollOdds(props) {
 
     </div>
   )
+}
+
+function SellChampButton(props) {
+  if(props.sellCost === 0) {
+    return null;
+  } else return (
+    <div className="sell-champ-content" onClick={props.onClick}>
+      <img className="sell-champ-background" src={images['sell-champ-background.png']}/>
+      <h1 className="sell-champ-text">Sell for {props.sellCost} Gold</h1>
+    </div>
+  );
 }
 
 class App extends React.Component {
@@ -367,9 +378,15 @@ class App extends React.Component {
     let champCost = myStage[i]['cost'];
     let champLevel = myStage[i]['level'];
     let myGold = this.state['gold'];
+    let myHeldChamp = this.state['heldChamp'];
+    let myDragging = this.state['dragging'];
 
     if(champName === "") {
-      return
+      return;
+    }
+    if(i === myHeldChamp) {
+      myDragging = false;
+      myHeldChamp = null;
     }
     myGold += Constants.SELL_RATE[champCost][champLevel - 1];
     myStage[i] = {
@@ -380,8 +397,11 @@ class App extends React.Component {
     this.setState({
       gold: myGold,
       stage: myStage,
-      stageLength: this.state.stageLength - 1
+      stageLength: this.state.stageLength - 1,
+      heldChamp: myHeldChamp,
+      dragging: myDragging
     });
+
   }
 
   checkForThree(champName, myStageLength) {
@@ -521,9 +541,21 @@ class App extends React.Component {
   render() {
     const level = this.state['level'];
     const xp_text = (level === 9) ? "Max" : this.state['xp'] + "/" + Constants.XP_THRESH[level];
+    const heldChamp = this.state.stage[this.state.heldChamp];
+    const sellCost = heldChamp ? Constants.SELL_RATE[heldChamp['cost']][heldChamp['level'] - 1] : 0;
     return (
       <div onKeyDown={this.handleKeyPress}>
         <img className="background" src={images['tft-map-background.jpg']}/>
+        <div class="title" >
+          <a href="/index.html" style={{textDecoration: "none"}}>
+            rolldown.gg
+            <FontAwesomeIcon icon={faDice} className="logo" style={{filter: "drop-shadow"}}/>
+          </a>
+        </div>
+
+          <KeybindButton/>
+      
+
         <ChampionStage
           stage={this.state['stage']}
           onMouseOver={(i) => this.handleMouseOver(i)}
@@ -550,10 +582,19 @@ class App extends React.Component {
             <ChampionTile champion={this.state['store'][3]} onClick={() => this.checkForThree(this.buyChamp(3))}/>
             <ChampionTile champion={this.state['store'][4]} onClick={() => this.checkForThree(this.buyChamp(4))}/>
           </div>
+          <SellChampButton
+            onClick={() => this.sellChamp(this.state.heldChamp)}
+            sellCost={sellCost}/>
         </div>
       </div>
     )
   }
+}
+
+function KeybindButton(props) {
+  return (
+    <FontAwesomeIcon icon={faKeyboard} className="keybind-button"/>
+  );
 }
 
 class ChampionStage extends React.Component {
