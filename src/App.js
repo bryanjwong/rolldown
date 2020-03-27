@@ -444,8 +444,10 @@ export default class App extends React.Component {
       }
       if(myGold < champCost * storeCount) return;
       myGold -= champCost * storeCount;
+      let player = new Audio(audio['buychamp.ogg']);
+      player.play();
       let audioPath = "champlevelup" + newChampLevel.toString() + ".ogg";
-      let player = new Audio(audio[audioPath]);
+      player = new Audio(audio[audioPath]);
       player.play();
       this.setState ({
         store: myStore,
