@@ -288,6 +288,7 @@ div.wrap {height:100%; overflow:hidden;}
   top: 0px;
   text-align: left;
   border: none;
+  outline: none;
 }
 
 .refresh-btn {
@@ -297,6 +298,11 @@ div.wrap {height:100%; overflow:hidden;}
   bottom: 0px;
   text-align: left;
   border: none;
+  outline: none;
+}
+
+.buy-xp-btn:focus, .refresh-btn:focus {
+  outline: none;
 }
 
 .display-bar {
@@ -390,6 +396,7 @@ div.wrap {height:100%; overflow:hidden;}
   left: 17%;
   bottom: 0px;
   top: 20%;
+  cursor: pointer;
 }
 
 .sell-champ-background {

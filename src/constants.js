@@ -39,4 +39,3 @@ ChampionData.forEach((champion) => {
     championPool[cost].push(champion);
   }
 })
-console.log(championPool[1]);

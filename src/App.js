@@ -21,10 +21,10 @@ function importAll(r) {
     return images;
 }
 const images = importAll(require.context('./images', true, /\.(png|jpe?g|svg)$/));
+const audio = importAll(require.context('./audio', true, /\.(ogg)$/));
 
 /* Todos:
     View specific odds of rolling a champ
-    ADD SOUNDS
 */
 
 export default class App extends React.Component {
@@ -59,6 +59,7 @@ export default class App extends React.Component {
       heldChamp: null,
       keybindMenuHidden: true
     };
+
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleGoldInput = this.handleGoldInput.bind(this);
     this.handleLvlInput = this.handleLvlInput.bind(this);
@@ -122,9 +123,10 @@ export default class App extends React.Component {
 
   handleChampClick(i) {
     let myStage = this.state.stage;
+    let player = new Audio(audio['drop.ogg']);
+    // Swap spots
     if(this.state.heldChamp !== null && i !== this.state.heldChamp) {
       let temp = myStage[i];
-
       myStage[i] = myStage[this.state.heldChamp];
       myStage[this.state.heldChamp] = temp;
       this.setState({
@@ -132,16 +134,20 @@ export default class App extends React.Component {
         dragging: false,
         heldChamp: null
       });
+      player.play();
       return;
     }
     if(this.state.dragging === false) {
       if(myStage[i]['name'] === "") return;
+      player = new Audio(audio['pickup.ogg']);
+      player.play();
       this.setState({
         dragging: true,
         heldChamp: i
       });
       return;
     }
+    player.play();
     let clickedTile = null;
     let myHovered = this.state.hovered;
     for(let element of myHovered) {
@@ -162,6 +168,8 @@ export default class App extends React.Component {
   handleGoldInput(e) {
     let goldValue = e.target.value > -1 ? e.target.value : 0;
     goldValue = goldValue < 1000 ? goldValue : 999;
+    let player = new Audio(audio["gold.ogg"]);
+    player.play();
     this.setState({
       gold: goldValue
     });
@@ -171,6 +179,8 @@ export default class App extends React.Component {
     if(!e.target.value) return;
     let levelValue = (e.target.value >= 2) ? e.target.value : 2;
     levelValue = (levelValue < 10) ? levelValue : 9;
+    let player = new Audio(audio["buyxp.ogg"]);
+    player.play();
     this.setState({
       level: levelValue,
       xp: 0
@@ -183,12 +193,16 @@ export default class App extends React.Component {
     if(this.state['level'] === 9 || this.state['gold'] < 4) {
       return;
     }
+    let player = new Audio(audio['buyxp.ogg']);
+    player.play();
     var gold = this.state['gold'] - 4;
     var xp = this.state['xp'] + 4;
     var level = this.state['level'];
     if(xp >= Constants.XP_THRESH[level]) {
       xp -= Constants.XP_THRESH[level];
       level++;
+      let player = new Audio(audio['playerlevelup.ogg']);
+      player.play();
     }
     this.setState ({
       level: level,
@@ -201,6 +215,8 @@ export default class App extends React.Component {
     if(this.state['gold'] < 2) {
       return;
     }
+    let player = new Audio(audio['refresh.ogg']);
+    player.play();
     let gold = this.state['gold'] - 2;
     this.setState ({
       gold: gold
@@ -268,6 +284,8 @@ export default class App extends React.Component {
     if(myGold < champCost || champCost === 0) {
       return;
     }
+    let player = new Audio(audio['buychamp.ogg']);
+    player.play();
     myGold -= champCost;
     myStageLength++;
     myStore[i] = {
@@ -311,6 +329,9 @@ export default class App extends React.Component {
       myDragging = false;
       myHeldChamp = null;
     }
+    const randSFX = Math.floor(Math.random() * 5);
+    let player = new Audio(audio['sellchamp' + randSFX.toString() + '.ogg']);
+    player.play();
     myGold += Constants.SELL_RATE[champCost][champLevel - 1];
     myStage[i] = {
       name: "",
@@ -357,6 +378,10 @@ export default class App extends React.Component {
             stage: myStage,
             stageLength: myStageLength
           });
+          let newChampLevel = myStage[champOccurences[champLevel][0]]['level'];
+          let audioPath = "champlevelup" + newChampLevel.toString() + ".ogg";
+          let player = new Audio(audio[audioPath]);
+          player.play();
           this.checkForThree(champName, myStageLength);
         }
       }
@@ -402,11 +427,13 @@ export default class App extends React.Component {
         }
       }
 
+      let newChampLevel;
       var upgraded = false;
       for(let j = 0; j < 9; j++) {
         if(myStage[j]['name'] === champName && myStage[j]['level'] === 1) {
           if(!upgraded) {
             myStage[j]['level']++;
+            newChampLevel = myStage[j]['level'];
             upgraded = true;
           }
           else {
@@ -417,6 +444,9 @@ export default class App extends React.Component {
       }
       if(myGold < champCost * storeCount) return;
       myGold -= champCost * storeCount;
+      let audioPath = "champlevelup" + newChampLevel.toString() + ".ogg";
+      let player = new Audio(audio[audioPath]);
+      player.play();
       this.setState ({
         store: myStore,
         gold: myGold,
@@ -442,6 +472,9 @@ export default class App extends React.Component {
           </a>
         </div>
         <KeybindButton onClick={() => {
+          let audioPath = this.state.keybindMenuHidden ? "menuopen.ogg" : "menuclose.ogg";
+          let player = new Audio(audio[audioPath]);
+          player.play();
           this.setState({
             keybindMenuHidden: !this.state.keybindMenuHidden
           });

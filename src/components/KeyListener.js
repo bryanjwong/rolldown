@@ -1,6 +1,7 @@
 import React from "react"
 import "../index.css"
 import * as Constants from "../constants.js"
+import KeybindSound from "../audio/pickup.ogg"
 
 export default class KeyListener extends React.Component {
   constructor(props) {
@@ -31,6 +32,8 @@ export default class KeyListener extends React.Component {
   }
 
   handleClick() {
+    let player = new Audio(KeybindSound);
+    player.play();
     this.setState({
       active: true
     });
